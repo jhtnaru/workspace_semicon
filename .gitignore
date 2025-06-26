@@ -1,5 +1,10 @@
-# Debug folder
-/Debug/
+# STM32
+Debug/
+*.ioc
+*.launch
+*.log
+*.bin
+*.hex
 
 # Object files
 *.o
