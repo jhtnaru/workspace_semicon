@@ -1,0 +1,33 @@
+/*
+ * fnd.h
+ *
+ *  Created on: Jun 20, 2025
+ *      Author: user16
+ */
+#ifndef INC_FND_H_
+#define INC_FND_H_
+
+#include "main.h"
+
+typedef struct fnd_control {
+	GPIO_TypeDef	*port;
+	uint16_t		pinNumber;
+} FND_CONTROL;
+
+typedef struct fnd_select {
+	GPIO_TypeDef	*port;
+	uint16_t		pinNumber;
+} FND_SELECT;
+
+extern uint8_t segNum[20];
+extern uint8_t segAlph[26];
+
+void fndDisplay_CC(uint8_t select, uint8_t num);
+void fndDisplay_CA(uint8_t select, uint8_t num);
+
+void fnd4Dispaly_CC(uint8_t select0, uint8_t num0, uint8_t select1, uint8_t num1,
+        			uint8_t select2, uint8_t num2, uint8_t select3, uint8_t num3);
+void fnd4Dispaly_CA(uint8_t select0, uint8_t num0, uint8_t select1, uint8_t num1,
+        			uint8_t select2, uint8_t num2, uint8_t select3, uint8_t num3);
+
+#endif /* INC_FND_H_ */

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item key="hasShownOverlayPopupBefore" value="true"/>
+	<item key="replaceBarOpen" value="false"/>
+	<list key="searchhistory">
+		<item value="비상"/>
+		<item value="누르면"/>
+		<item value="stateChange"/>
+		<item value="ledIndex_s"/>
+		<item value="fndindex"/>
+		<item value="tick"/>
+		<item value="doortick"/>
+		<item value="doorti"/>
+		<item value="doorTick"/>
+		<item value="fndTick"/>
+		<item value="buttonTick"/>
+		<item value="__HAL_TIM_SET_COUNTER"/>
+	</list>
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="704"/>
+		<item key="DIALOG_Y_ORIGIN" value="350"/>
+	</section>
+</section>

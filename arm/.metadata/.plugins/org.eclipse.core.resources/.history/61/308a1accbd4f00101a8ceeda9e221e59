@@ -1,0 +1,248 @@
+/*
+ * elevator.c
+ *
+ *  Created on: Jun 23, 2025
+ *      Author: user16
+ */
+// elevator.c
+#include "elevator.h"
+
+uint8_t evDecision() {
+	  if (emgFlag == 1) {
+		  emgFloor = floorPre;
+		  emgState = floorState;
+		  floorPre = 0;
+		  floorState = 0;
+	  }
+
+	  // 초기 시작시 층수를 찾는 상황
+	  else if (floorPre == 0) {
+		  if (rxDataF1 == 1) {
+			  floorPre = 1;
+			  floorState = 0;
+		  }
+		  else if (rxDataF2 == 1) {
+			  floorPre = 2;
+			  floorState = 0;
+		  }
+		  else if (rxDataF3 == 1) {
+			  floorPre = 3;
+			  floorState = 0;
+		  }
+		  else {
+			  floorState = 7;
+		  }
+	  }
+
+	  // 1층에서 발생할 수 있는 상황
+	  else if (floorPre == 1) {
+		  if (floorState == 0) {
+			  if (doorFlag == 1 || outFlag1_up == 1) {
+				  floorState = 1;
+				  doorFlag = 0;
+				  outFlag1_up = 0;
+			  }
+			  else if (floorFlag1 == 1) {
+				  floorFlag1 = 0;
+			  }
+			  else if (floorFlag2 == 1 || floorFlag3 == 1 || outFlag2_dn == 1
+					  || outFlag2_up == 1 || outFlag3_dn == 1) {
+				  floorState = 6;
+			  }
+		  }
+		  else if (floorState == 1) {
+			  if (servoPos == 120) {
+				  floorState = 2;
+			  }
+		  }
+		  else if (floorState == 2) {
+			  if ((curTick - lastTick) >= basicTick) {
+				  doorIndex++;
+				  lastTick = curTick;
+			  }
+			  if (doorIndex >= doorIndex_s) {
+				  floorState = 3;
+				  ledOff(8);
+				  doorIndex = 0;
+			  }
+		  }
+		  else if (floorState == 3) {
+			  if (servoPos == 30) {
+				  floorState = 0;
+			  }
+			  if (doorFlag == 1 || outFlag1_up == 1) {
+				  floorState = 1;
+				  doorFlag = 0;
+				  outFlag1_up = 0;
+			  }
+		  }
+		  else if (floorState == 6) {
+			  if (floorFlag1 == 1) {
+				  floorFlag1 = 0;
+			  }
+			  else if (floorFlag2 == 1 || outFlag2_up == 1) {
+				  if (rxDataF2 == 1) {
+					  floorPre = 2;
+					  floorState = 1;
+					  floorFlag2 = 0;
+					  outFlag2_up = 0;
+				  }
+			  }
+			  else if (floorFlag2 == 0 && outFlag2_up == 0) {
+				  if (floorFlag3 == 1 || outFlag3_dn == 1) {
+					  if (rxDataF2 == 1) {
+						  floorPre = 2;
+						  floorState = 6;
+					  }
+				  }
+			  }
+		  }
+	  }
+
+	  // 2층에서 발생할 수 있는 상황
+	  else if (floorPre == 2) {
+		  if (floorState == 0) {
+			  if (doorFlag == 1 || outFlag2_up == 1 || outFlag2_dn == 1) {
+				  floorState = 1;
+				  doorFlag = 0;
+				  outFlag2_up = 0;
+				  outFlag2_dn = 0;
+			  }
+			  else if (floorFlag1 == 1 || outFlag1_up == 1) {
+				  floorState = 7;
+			  }
+			  else if (floorFlag2 == 1) {
+				  floorFlag2 = 0;
+			  }
+			  else if (floorFlag3 == 1 || outFlag3_dn == 1) {
+				  floorState = 6;
+			  }
+		  }
+		  else if (floorState == 1) {
+			  if (servoPos == 120) {
+				  floorState = 2;
+			  }
+		  }
+		  else if (floorState == 2) {
+			  if ((curTick - lastTick) >= basicTick) {
+				  doorIndex++;
+				  lastTick = curTick;
+			  }
+			  if (doorIndex >= doorIndex_s) {
+				  floorState = 3;
+				  ledOff(8);
+				  doorIndex = 0;
+			  }
+		  }
+		  else if (floorState == 3) {
+			  if (servoPos == 30) {
+				  floorState = 0;
+			  }
+			  if (doorFlag == 1 || outFlag2_up == 1 || outFlag2_dn == 1) {
+				  floorState = 1;
+				  doorFlag = 0;
+				  outFlag2_up = 0;
+				  outFlag2_dn = 0;
+			  }
+		  }
+		  else if (floorState == 6) {
+			  if (floorFlag1 == 1 || floorFlag2 == 1) {
+				  floorFlag1 = 0;
+				  floorFlag2 = 0;
+			  }
+			  else if (floorFlag3 == 1 || outFlag3_dn == 1) {
+				  if (rxDataF3 == 1) {
+					  floorPre = 3;
+					  floorState = 1;
+					  floorFlag3 = 0;
+					  outFlag3_dn = 0;
+				  }
+			  }
+		  }
+		  else if (floorState == 7) {
+			  if (floorFlag1 == 1 || outFlag1_up == 1) {
+				  if (rxDataF1 == 1) {
+					  floorPre = 1;
+					  floorState = 1;
+					  floorFlag1 = 0;
+					  outFlag1_up = 0;
+				  }
+			  }
+			  else if (floorFlag2 == 1 || floorFlag3 == 1) {
+				  floorFlag2 = 0;
+				  floorFlag3 = 0;
+			  }
+		  }
+	  }
+
+	  // 3층에서 발생할 수 있는 상황
+	  else if (floorPre == 3) {
+		  if (floorState == 0) {
+			  if (doorFlag == 1 || outFlag3_dn == 1) {
+				  floorState = 1;
+				  doorFlag = 0;
+				  outFlag3_dn = 0;
+			  }
+			  else if (floorFlag1 == 1 || floorFlag2 == 1 || outFlag1_up == 1
+					  || outFlag2_up == 1 || outFlag2_dn == 1) {
+				  floorState = 7;
+			  }
+			  else if (floorFlag3 == 1) {
+				  floorFlag3 = 0;
+			  }
+		  }
+		  else if (floorState == 1) {
+			  if (servoPos == 120) {
+				  floorState = 2;
+			  }
+		  }
+		  else if (floorState == 2) {
+			  if ((curTick - lastTick) >= basicTick) {
+				  doorIndex++;
+				  lastTick = curTick;
+			  }
+			  if (doorIndex >= doorIndex_s) {
+				  floorState = 3;
+				  ledOff(8);
+				  doorIndex = 0;
+			  }
+		  }
+		  else if (floorState == 3) {
+			  if (servoPos == 30) {
+				  floorState = 0;
+			  }
+			  if (doorFlag == 1 || outFlag3_dn == 1) {
+				  floorState = 1;
+				  doorFlag = 0;
+				  outFlag3_dn = 0;
+			  }
+		  }
+		  else if (floorState == 7) {
+			  if (floorFlag2 == 1 || outFlag2_dn == 1) {
+				  if (rxDataF2 == 1) {
+					  floorPre = 2;
+					  floorState = 1;
+					  floorFlag2 = 0;
+					  outFlag2_dn = 0;
+				  }
+			  }
+			  else if (floorFlag2 == 0 && outFlag2_up == 0) {
+				  if (floorFlag1 == 1 || outFlag1_up == 1) {
+					  if (rxDataF2 == 1) {
+						  floorPre = 2;
+						  floorState = 7;
+					  }
+				  }
+			  }
+			  else if (floorFlag3 == 1) {
+				  floorFlag3 = 0;
+			  }
+		  }
+	  }
+
+	  return (floorPre * 10) + floorState;
+}
+
+void evSituation(uint8_t ps) {
+
+}

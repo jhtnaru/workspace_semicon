@@ -1,0 +1,40 @@
+//org.eclipse.ui.commands/state/com.st.stm32cube.ide.mcu.buildanalyzer.showstate/org.eclipse.ui.commands.radioState=human
+//org.eclipse.ui.commands/state/org.eclipse.ui.navigator.resources.nested.changeProjectPresentation/org.eclipse.ui.commands.radioState=false
+ColorsAndFontsPreferencePage.expandedCategories=Torg.eclipse.ui.workbenchMisc\tTorg.eclipse.cdt.ui.presentation\tTorg.eclipse.cdt.ui.CEditor.presentation\tTorg.eclipse.cdt.ui.COutline.presentation\tTorg.eclipse.debug.ui.presentation\tTterminal.views.theme.category\tTorg.eclipse.compare.contentmergeviewer.TextMergeViewer\tTorg.eclipse.ui.presentation.default
+ColorsAndFontsPreferencePage.selectedElement=Forg.eclipse.jface.textfont
+PLUGINS_NOT_ACTIVATED_ON_STARTUP=
+UIActivities.org.eclipse.cdt.debug.dsfgdbActivity=true
+eclipse.preferences.version=1
+editors=<?xml version\="1.0" encoding\="UTF-8"?>\n<editors>\n<descriptor id\="org.eclipse.ui.browser.editorSupport" image\="$nl$/icons/obj16/internal_browser.png" internal\="false" label\="Web Browser" launcher\="org.eclipse.ui.internal.browser.BrowserLauncher" openMode\="4" open_in_place\="false" plugin\="org.eclipse.ui.browser"/>\n<descriptor class\="com.st.stm32cube.ide.mpu.linux.ide.editor.DTSEditor" id\="com.st.stm32cube.ide.mpu.linux.ide.editor.DTSEditor" image\="icons/dts_icon.png" internal\="true" label\="Device Tree Editor" openMode\="1" open_in_place\="false" plugin\="com.st.stm32cube.ide.mpu.linux.ide"/>\n<descriptor class\="com.st.stm32cube.common.mx.editor.CubeMxEditor" id\="com.st.stm32cube.common.mx.startCubeMx" image\="icons/MicroXplorer.png" internal\="true" label\="Device Configuration Tool" openMode\="1" open_in_place\="false" plugin\="com.st.stm32cube.common.mx"/>\n</editors>
+org.eclipse.cdt.debug.ui.ModulesDetailPaneFont=1|Cascadia Code|12.0|0|GTK|1|;
+org.eclipse.cdt.internal.ui.compare.AsmMergeViewer=1|Cascadia Code|12.0|0|GTK|1|;
+org.eclipse.cdt.internal.ui.compare.CMergeViewer=1|Cascadia Code|12.0|0|GTK|1|;
+org.eclipse.cdt.make.internal.ui.compare.MakefileMergeViewer=1|Cascadia Code|12.0|0|GTK|1|;
+org.eclipse.cdt.ui.buildconsole.ConsoleFont=1|Cascadia Code|12.0|0|GTK|1|;
+org.eclipse.cdt.ui.editors.textfont=1|Cascadia Code|12.0|0|GTK|1|;
+org.eclipse.compare.contentmergeviewer.TextMergeViewer=1|Cascadia Code|12.0|0|GTK|1|;
+org.eclipse.debug.ui.DetailPaneFont=1|Cascadia Code|12.0|0|GTK|1|;
+org.eclipse.debug.ui.MemoryViewTableFont=1|Cascadia Code|12.0|0|GTK|1|;
+org.eclipse.debug.ui.consoleFont=1|Cascadia Code|12.0|0|GTK|1|;
+org.eclipse.jface.textfont=1|Cascadia Code|12.0|0|GTK|1|;
+org.eclipse.ui.commands=<?xml version\="1.0" encoding\="UTF-8"?>\n<org.eclipse.ui.commands>\n<keyBinding commandId\="org.eclipse.ui.edit.text.contentAssist.proposals" contextId\="org.eclipse.ui.contexts.dialogAndWindow" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="CTRL+SPACE"/>\n<keyBinding contextId\="org.eclipse.ui.contexts.window" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="CTRL+F11"/>\n<keyBinding contextId\="org.eclipse.ui.contexts.dialogAndWindow" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="ALT+/"/>\n</org.eclipse.ui.commands>
+org.eclipse.ui.ide.systemDefault.org.eclipse.cdt.ui.ColoredLabels.match_highlight=206,204,247
+org.eclipse.ui.ide.systemDefault.org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_BG_END=255,255,255
+org.eclipse.ui.ide.systemDefault.org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_BG_START=255,255,255
+org.eclipse.ui.ide.systemDefault.org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_TEXT_COLOR=16,16,16
+org.eclipse.ui.ide.systemDefault.org.eclipse.ui.workbench.ACTIVE_TAB_BG_END=255,255,255
+org.eclipse.ui.ide.systemDefault.org.eclipse.ui.workbench.ACTIVE_TAB_BG_START=255,255,255
+org.eclipse.ui.ide.systemDefault.org.eclipse.ui.workbench.ACTIVE_TAB_TEXT_COLOR=247,247,247
+org.eclipse.ui.ide.systemDefault.org.eclipse.ui.workbench.INACTIVE_TAB_BG_END=246,245,244
+org.eclipse.ui.ide.systemDefault.org.eclipse.ui.workbench.INACTIVE_TAB_BG_START=246,245,244
+org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_BG_END=255,255,255
+org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_BG_START=255,255,255
+org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_TEXT_COLOR=16,16,16
+org.eclipse.ui.workbench.ACTIVE_TAB_BG_END=255,255,255
+org.eclipse.ui.workbench.ACTIVE_TAB_BG_START=255,255,255
+org.eclipse.ui.workbench.ACTIVE_TAB_TEXT_COLOR=61,61,61
+org.eclipse.ui.workbench.INACTIVE_TAB_BG_END=246,245,244
+org.eclipse.ui.workbench.INACTIVE_TAB_BG_START=246,245,244
+org.eclipse.ui.workbench.texteditor.blockSelectionModeFont=1|Cascadia Code|10.0|0|GTK|1|;
+resourcetypes=<?xml version\="1.0" encoding\="UTF-8"?>\n<editors version\="3.1">\n<info extension\="shtml" name\="*">\n<editor id\="org.eclipse.ui.browser.editorSupport"/>\n</info>\n<info extension\="dtsi" name\="*">\n<editor id\="com.st.stm32cube.ide.mpu.linux.ide.editor.DTSEditor"/>\n</info>\n<info extension\="dts" name\="*">\n<editor id\="com.st.stm32cube.ide.mpu.linux.ide.editor.DTSEditor"/>\n</info>\n<info extension\="htm" name\="*">\n<editor id\="org.eclipse.ui.browser.editorSupport"/>\n</info>\n<info extension\="html" name\="*">\n<editor id\="org.eclipse.ui.browser.editorSupport"/>\n</info>\n<info extension\="ioc" name\="*">\n<editor id\="com.st.stm32cube.common.mx.startCubeMx"/>\n</info>\n</editors>
+terminal.views.view.font.definition=1|Cascadia Code|12.0|0|GTK|1|;

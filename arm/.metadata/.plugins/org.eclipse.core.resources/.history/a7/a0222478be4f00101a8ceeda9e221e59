@@ -1,0 +1,508 @@
+/*
+ * elevator.c
+ *
+ *  Created on: Jun 23, 2025
+ *      Author: user16
+ */
+// elevator.c
+#include "elevator.h"
+
+uint8_t evDecision() {
+	  if (emgFlag == 1) {
+		  emgFloor = floorPre;
+		  emgState = floorState;
+		  floorPre = 0;
+		  floorState = 0;
+	  }
+
+	  // 초기 시작시 층수를 찾는 상황
+	  else if (floorPre == 0) {
+		  if (rxDataF1 == 1) {
+			  floorPre = 1;
+			  floorState = 0;
+		  }
+		  else if (rxDataF2 == 1) {
+			  floorPre = 2;
+			  floorState = 0;
+		  }
+		  else if (rxDataF3 == 1) {
+			  floorPre = 3;
+			  floorState = 0;
+		  }
+		  else {
+			  floorState = 7;
+		  }
+	  }
+
+	  // 1층에서 발생할 수 있는 상황
+	  else if (floorPre == 1) {
+		  if (floorState == 0) {
+			  if (doorFlag == 1 || outFlag1_up == 1) {
+				  floorState = 1;
+				  doorFlag = 0;
+				  outFlag1_up = 0;
+			  }
+			  else if (floorFlag1 == 1) {
+				  floorFlag1 = 0;
+			  }
+			  else if (floorFlag2 == 1 || floorFlag3 == 1 || outFlag2_dn == 1
+					  || outFlag2_up == 1 || outFlag3_dn == 1) {
+				  floorState = 6;
+			  }
+		  }
+		  else if (floorState == 1) {
+			  if (servoPos == 120) {
+				  floorState = 2;
+			  }
+		  }
+		  else if (floorState == 2) {
+			  if ((curTick - lastTick) >= basicTick) {
+				  doorIndex++;
+				  lastTick = curTick;
+			  }
+			  if (doorIndex >= doorIndex_s) {
+				  floorState = 3;
+				  ledOff(8);
+				  doorIndex = 0;
+			  }
+		  }
+		  else if (floorState == 3) {
+			  if (servoPos == 30) {
+				  floorState = 0;
+			  }
+			  if (doorFlag == 1 || outFlag1_up == 1) {
+				  floorState = 1;
+				  doorFlag = 0;
+				  outFlag1_up = 0;
+			  }
+		  }
+		  else if (floorState == 6) {
+			  if (floorFlag1 == 1) {
+				  floorFlag1 = 0;
+			  }
+			  else if (floorFlag2 == 1 || outFlag2_up == 1) {
+				  if (rxDataF2 == 1) {
+					  floorPre = 2;
+					  floorState = 1;
+					  floorFlag2 = 0;
+					  outFlag2_up = 0;
+				  }
+			  }
+			  else if (floorFlag2 == 0 && outFlag2_up == 0) {
+				  if (floorFlag3 == 1 || outFlag3_dn == 1) {
+					  if (rxDataF2 == 1) {
+						  floorPre = 2;
+						  floorState = 6;
+					  }
+				  }
+			  }
+		  }
+	  }
+
+	  // 2층에서 발생할 수 있는 상황
+	  else if (floorPre == 2) {
+		  if (floorState == 0) {
+			  if (doorFlag == 1 || outFlag2_up == 1 || outFlag2_dn == 1) {
+				  floorState = 1;
+				  doorFlag = 0;
+				  outFlag2_up = 0;
+				  outFlag2_dn = 0;
+			  }
+			  else if (floorFlag1 == 1 || outFlag1_up == 1) {
+				  floorState = 7;
+			  }
+			  else if (floorFlag2 == 1) {
+				  floorFlag2 = 0;
+			  }
+			  else if (floorFlag3 == 1 || outFlag3_dn == 1) {
+				  floorState = 6;
+			  }
+		  }
+		  else if (floorState == 1) {
+			  if (servoPos == 120) {
+				  floorState = 2;
+			  }
+		  }
+		  else if (floorState == 2) {
+			  if ((curTick - lastTick) >= basicTick) {
+				  doorIndex++;
+				  lastTick = curTick;
+			  }
+			  if (doorIndex >= doorIndex_s) {
+				  floorState = 3;
+				  ledOff(8);
+				  doorIndex = 0;
+			  }
+		  }
+		  else if (floorState == 3) {
+			  if (servoPos == 30) {
+				  floorState = 0;
+			  }
+			  if (doorFlag == 1 || outFlag2_up == 1 || outFlag2_dn == 1) {
+				  floorState = 1;
+				  doorFlag = 0;
+				  outFlag2_up = 0;
+				  outFlag2_dn = 0;
+			  }
+		  }
+		  else if (floorState == 6) {
+			  if (floorFlag1 == 1 || floorFlag2 == 1) {
+				  floorFlag1 = 0;
+				  floorFlag2 = 0;
+			  }
+			  else if (floorFlag3 == 1 || outFlag3_dn == 1) {
+				  if (rxDataF3 == 1) {
+					  floorPre = 3;
+					  floorState = 1;
+					  floorFlag3 = 0;
+					  outFlag3_dn = 0;
+				  }
+			  }
+		  }
+		  else if (floorState == 7) {
+			  if (floorFlag1 == 1 || outFlag1_up == 1) {
+				  if (rxDataF1 == 1) {
+					  floorPre = 1;
+					  floorState = 1;
+					  floorFlag1 = 0;
+					  outFlag1_up = 0;
+				  }
+			  }
+			  else if (floorFlag2 == 1 || floorFlag3 == 1) {
+				  floorFlag2 = 0;
+				  floorFlag3 = 0;
+			  }
+		  }
+	  }
+
+	  // 3층에서 발생할 수 있는 상황
+	  else if (floorPre == 3) {
+		  if (floorState == 0) {
+			  if (doorFlag == 1 || outFlag3_dn == 1) {
+				  floorState = 1;
+				  doorFlag = 0;
+				  outFlag3_dn = 0;
+			  }
+			  else if (floorFlag1 == 1 || floorFlag2 == 1 || outFlag1_up == 1
+					  || outFlag2_up == 1 || outFlag2_dn == 1) {
+				  floorState = 7;
+			  }
+			  else if (floorFlag3 == 1) {
+				  floorFlag3 = 0;
+			  }
+		  }
+		  else if (floorState == 1) {
+			  if (servoPos == 120) {
+				  floorState = 2;
+			  }
+		  }
+		  else if (floorState == 2) {
+			  if ((curTick - lastTick) >= basicTick) {
+				  doorIndex++;
+				  lastTick = curTick;
+			  }
+			  if (doorIndex >= doorIndex_s) {
+				  floorState = 3;
+				  ledOff(8);
+				  doorIndex = 0;
+			  }
+		  }
+		  else if (floorState == 3) {
+			  if (servoPos == 30) {
+				  floorState = 0;
+			  }
+			  if (doorFlag == 1 || outFlag3_dn == 1) {
+				  floorState = 1;
+				  doorFlag = 0;
+				  outFlag3_dn = 0;
+			  }
+		  }
+		  else if (floorState == 7) {
+			  if (floorFlag2 == 1 || outFlag2_dn == 1) {
+				  if (rxDataF2 == 1) {
+					  floorPre = 2;
+					  floorState = 1;
+					  floorFlag2 = 0;
+					  outFlag2_dn = 0;
+				  }
+			  }
+			  else if (floorFlag2 == 0 && outFlag2_up == 0) {
+				  if (floorFlag1 == 1 || outFlag1_up == 1) {
+					  if (rxDataF2 == 1) {
+						  floorPre = 2;
+						  floorState = 7;
+					  }
+				  }
+			  }
+			  else if (floorFlag3 == 1) {
+				  floorFlag3 = 0;
+			  }
+		  }
+	  }
+
+	  return (floorPre * 10) + floorState;
+}
+
+void evSituation(uint8_t ps) {
+	  switch (ps) {
+	    case 0:
+	    	if ((curTick - lastTick) >= basicTick) {
+	    		emgIndex++;
+				lastTick = curTick;
+			}
+	    	if (emgIndex >= emgIndex_s) {
+	    		if (fndState == 1) {
+		    		moveCursor(0, 0);
+		    		lcdString("EMERGENCY       ");
+		    		fndDisplay_CC(0, 0);
+		    		ledOn(8);
+		    		fndState = 0;
+	    		}
+	    		else if (fndState == 0) {
+	    			moveCursor(0, 0);
+	    			lcdString("Run Away        ");
+	    			fndDisplay_CC(2, 0);
+	    			ledOff(8);
+	    			fndState = 1;
+	    		}
+	    		emgIndex = 0;
+	    	}
+	    	floorPre = emgFloor;
+	    	floorState = emgState;
+	    	break;
+
+	    case 7:
+	    	rotateDegrees(10, DIR_CCW);
+	    	moveCursor(0, 0);
+	    	lcdString("Move to Floor   ");
+	    	break;
+
+		case 10:
+			fndDisplay_CC(0, floorPre);
+			moveCursor(0, 0);
+			lcdString("Floor 1 Stop    ");
+			ledOff(8);
+			break;
+
+		case 11:
+			fndDisplay_CC(0, floorPre);
+			moveCursor(0, 0);
+			lcdString("F1 Opening Door ");
+			if ((curTick - lastTick) >= basicTick) {
+				servoIndex++;
+				ledIndex++;
+				lastTick = curTick;
+			}
+			if (ledIndex >= ledIndex_s) {
+				ledFlower(8, 0);
+				ledIndex = 0;
+			}
+			if (servoIndex >= servoIndex_s) {
+				servoMove(0, 120);
+				servoIndex = 0;
+			}
+			break;
+
+		case 12:
+			fndDisplay_CC(0, floorPre);
+			moveCursor(0, 0);
+			lcdString("F1 Open Door    ");
+			ledOn(8);
+			break;
+
+		case 13:
+			fndDisplay_CC(0, floorPre);
+			moveCursor(0, 0);
+			lcdString("F1 Closing Door ");
+			if ((curTick - lastTick) >= basicTick) {
+				servoIndex++;
+				ledIndex++;
+				lastTick = curTick;
+			}
+			if (ledIndex >= ledIndex_s) {
+				ledFlower(8, 0);
+				ledIndex = 0;
+			}
+			if (servoIndex >= servoIndex_s) {
+				servoMove(0, 30);
+				servoIndex = 0;
+			}
+			break;
+
+		case 16:
+			if ((curTick - lastTick) >= basicTick) {
+				fndState = !fndState;
+				ledOff(8);
+				ledLeftShift(8, 0);
+				lastTick = curTick;
+			}
+			if (fndState == 1) {
+				fndDisplay_CC(0, floorPre);
+			}
+			else if (fndState == 0) {
+				fndDisplay_CC(2, floorPre);
+			}
+			moveCursor(0, 0);
+			lcdString("Move to Floor 2 ");
+			rotateDegrees(10, DIR_CW);
+			break;
+
+		case 20:
+			fndDisplay_CC(0, floorPre);
+			moveCursor(0, 0);
+			lcdString("Floor 2 Stop    ");
+			ledOff(8);
+			break;
+
+		case 21:
+			fndDisplay_CC(0, floorPre);
+			moveCursor(0, 0);
+			lcdString("F2 Opening Door ");
+			if ((curTick - lastTick) >= basicTick) {
+				servoIndex++;
+				ledIndex++;
+				lastTick = curTick;
+			}
+			if (ledIndex >= ledIndex_s) {
+				ledFlower(8, 0);
+				ledIndex = 0;
+			}
+			if (servoIndex >= servoIndex_s) {
+				servoMove(0, 120);
+				servoIndex = 0;
+			}
+			break;
+
+		case 22:
+			fndDisplay_CC(0, floorPre);
+			moveCursor(0, 0);
+			lcdString("F2 Open Door    ");
+			ledOn(8);
+			break;
+
+		case 23:
+			fndDisplay_CC(0, floorPre);
+			moveCursor(0, 0);
+			lcdString("F2 Closing Door ");
+			if ((curTick - lastTick) >= basicTick) {
+				servoIndex++;
+				ledIndex++;
+				lastTick = curTick;
+			}
+			if (ledIndex >= ledIndex_s) {
+				ledFlower(8, 0);
+				ledIndex = 0;
+			}
+			if (servoIndex >= servoIndex_s) {
+				servoMove(0, 30);
+				servoIndex = 0;
+			}
+			break;
+
+		case 26:
+			if ((curTick - lastTick) >= basicTick) {
+				fndState = !fndState;
+				ledOff(8);
+				ledLeftShift(8, 0);
+				lastTick = curTick;
+			}
+			if (fndState == 1) {
+				fndDisplay_CC(0, floorPre);
+			}
+			else if (fndState == 0) {
+				fndDisplay_CC(2, floorPre);
+			}
+			moveCursor(0, 0);
+			lcdString("Move to Floor 3 ");
+			rotateDegrees(10, DIR_CW);
+			break;
+
+		case 27:
+			if ((curTick - lastTick) >= basicTick) {
+				fndState = !fndState;
+				ledOff(8);
+				ledRightShift(8, 0);
+				lastTick = curTick;
+			}
+			if (fndState == 1) {
+				fndDisplay_CC(0, floorPre);
+			}
+			else if (fndState == 0) {
+				fndDisplay_CC(2, floorPre);
+			}
+			moveCursor(0, 0);
+			lcdString("Move to Floor 1 ");
+			rotateDegrees(10, DIR_CCW);
+			break;
+
+		case 30:
+			fndDisplay_CC(0, floorPre);
+			moveCursor(0, 0);
+			lcdString("Floor 3 Stop    ");
+			ledOff(8);
+			break;
+
+		case 31:
+			fndDisplay_CC(0, floorPre);
+			moveCursor(0, 0);
+			lcdString("F3 Opening Door ");
+			if ((curTick - lastTick) >= basicTick) {
+				servoIndex++;
+				ledIndex++;
+				lastTick = curTick;
+			}
+			if (ledIndex >= ledIndex_s) {
+				ledFlower(8, 0);
+				ledIndex = 0;
+			}
+			if (servoIndex >= servoIndex_s) {
+				servoMove(0, 120);
+				servoIndex = 0;
+			}
+			break;
+
+		case 32:
+			fndDisplay_CC(0, floorPre);
+			moveCursor(0, 0);
+			lcdString("F3 Open Door    ");
+			ledOn(8);
+			break;
+
+		case 33:
+			fndDisplay_CC(0, floorPre);
+			moveCursor(0, 0);
+			lcdString("F3 Closing Door ");
+			if ((curTick - lastTick) >= basicTick) {
+				servoIndex++;
+				ledIndex++;
+				lastTick = curTick;
+			}
+			if (ledIndex >= ledIndex_s) {
+				ledFlower(8, 0);
+				ledIndex = 0;
+			}
+			if (servoIndex >= servoIndex_s) {
+				servoMove(0, 30);
+				servoIndex = 0;
+			}
+			break;
+
+		case 37:
+			if ((curTick - lastTick) >= basicTick) {
+				fndState = !fndState;
+				ledOff(8);
+				ledRightShift(8, 0);
+				lastTick = curTick;
+			}
+			if (fndState == 1) {
+				fndDisplay_CC(0, floorPre);
+			}
+			else if (fndState == 0) {
+				fndDisplay_CC(2, floorPre);
+			}
+			moveCursor(0, 0);
+			lcdString("Move to Floor 2 ");
+			rotateDegrees(10, DIR_CCW);
+			break;
+	}
+}

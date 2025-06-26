@@ -1,0 +1,14 @@
+/*
+ * button.c
+ *
+ *  Created on: Jun 22, 2025
+ *      Author: user16
+ */
+
+// button.c
+#include "button.h"
+
+BUTTON_CONTROL button[1] = {
+		{GPIOC, GPIO_PIN_4, 0},
+};
+

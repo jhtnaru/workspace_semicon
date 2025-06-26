@@ -1,0 +1,20 @@
+/*
+ * buzzer.h
+ *
+ *  Created on: Jun 23, 2025
+ *      Author: user16
+ */
+#ifndef INC_BUZZER_H_
+#define INC_BUZZER_H_
+
+#include "main.h"
+
+#define BUZZER_PSC		TIM3->PSC
+#define BUZZER_CCR		TIM3->CCR1
+
+
+extern uint16_t bzScale[8];
+
+void bzSound(uint8_t scale, uint16_t volume);
+
+#endif /* INC_BUZZER_H_ */

@@ -1,0 +1,14 @@
+/*
+ * buzzer.h
+ *
+ *  Created on: Jun 23, 2025
+ *      Author: user16
+ */
+#ifndef INC_BUZZER_H_
+#define INC_BUZZER_H_
+
+#include "main.h"
+
+extern uint16_t bzScale[8];
+
+#endif /* INC_BUZZER_H_ */
