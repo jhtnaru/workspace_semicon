@@ -1,1 +1,10 @@
+# Debug folder
 /Debug/
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+
