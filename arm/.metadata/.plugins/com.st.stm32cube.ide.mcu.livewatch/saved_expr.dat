@@ -1,5 +1,2 @@
-IC_Value1
-IC_Value2
-echoTime
-captureFlag
-distance
+dht.temperature
+dht.humidity
