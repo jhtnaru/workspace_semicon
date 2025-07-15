@@ -3,22 +3,22 @@
 # SW Build 5239630 on Fri Nov 08 22:34:34 MST 2024
 # IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
 # SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
-# Start of session at: Mon Jul 14 15:48:46 2025
-# Process ID         : 57609
+# Start of session at: Tue Jul 15 11:53:38 2025
+# Process ID         : 35860
 # Current directory  : /home/user16/workspace_semicon/verilog/test/test.runs/synth_1
-# Command line       : vivado -log or_gate.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source or_gate.tcl
-# Log file           : /home/user16/workspace_semicon/verilog/test/test.runs/synth_1/or_gate.vds
+# Command line       : vivado -log gates.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source gates.tcl
+# Log file           : /home/user16/workspace_semicon/verilog/test/test.runs/synth_1/gates.vds
 # Journal file       : /home/user16/workspace_semicon/verilog/test/test.runs/synth_1/vivado.jou
 # Running On         : user16-B70TV-AN5TB8W
 # Platform           : Ubuntu
 # Operating System   : Ubuntu 24.04.2 LTS
 # Processor Detail   : Intel(R) Core(TM) i5-6400 CPU @ 2.70GHz
-# CPU Frequency      : 2700.003 MHz
+# CPU Frequency      : 2700.034 MHz
 # CPU Physical cores : 4
 # CPU Logical cores  : 4
 # Host memory        : 16647 MB
 # Swap memory        : 4294 MB
 # Total Virtual      : 20942 MB
-# Available Virtual  : 14582 MB
+# Available Virtual  : 15046 MB
 #-----------------------------------------------------------
-source or_gate.tcl -notrace
+source gates.tcl -notrace

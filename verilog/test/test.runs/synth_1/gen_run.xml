@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1752475721" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/and_gate.dcp">
-  <File Type="RDS-DCP" Name="or_gate.dcp"/>
-  <File Type="RDS-RDS" Name="or_gate.vds"/>
-  <File Type="REPORTS-TCL" Name="or_gate_reports.tcl"/>
-  <File Type="PA-TCL" Name="or_gate.tcl"/>
-  <File Type="RDS-UTIL" Name="or_gate_utilization_synth.rpt"/>
-  <File Type="RDS-UTIL-PB" Name="or_gate_utilization_synth.pb"/>
+<GenRun Id="synth_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1752548014" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/and_gate.dcp">
+  <File Type="RDS-DCP" Name="gates.dcp"/>
+  <File Type="RDS-RDS" Name="gates.vds"/>
+  <File Type="REPORTS-TCL" Name="gates_reports.tcl"/>
+  <File Type="PA-TCL" Name="gates.tcl"/>
+  <File Type="RDS-UTIL" Name="gates_utilization_synth.rpt"/>
+  <File Type="RDS-UTIL-PB" Name="gates_utilization_synth.pb"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/new/GATE.v">
@@ -17,7 +17,7 @@
     </File>
     <Config>
       <Option Name="DesignMode" Val="RTL"/>
-      <Option Name="TopModule" Val="or_gate"/>
+      <Option Name="TopModule" Val="gates"/>
     </Config>
   </FileSet>
   <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1" RelGenDir="$PGENDIR/constrs_1">

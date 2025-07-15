@@ -39,10 +39,10 @@ endmodule
 // 구조적 AND Gate, Gate(AND) 이용해서 회로 구조 기술, Hardware 구성요소를 직접 Instance 생성
 module and_gate_structual (
     input a, b,
-    output q                                // wire type 사용
+    output q                // wire type 사용
     );
 
-    and U1(q, a, b);                        // AND gate Instance 생성
+    and U1(q, a, b);        // Verilog 기본 내장 AND gate 사용, Instance 생성
 endmodule
 
 // Data Flow AND Gate, assign문으로 출력과 입력간의 논리 기술, Data Flow 중심
@@ -92,7 +92,7 @@ module or_gate_structual (
     output q
 );
 
-    or U1(q, a, b);
+    or U1(q, a, b);         // Verilog 기본 내장 OR gate 사용
 endmodule
 
 // Data Flow OR Gate
@@ -102,4 +102,222 @@ module or_gate_dataflow (
     );
 
     assign q = a | b;
+endmodule
+
+// 동작적 NAND Gate
+module nand_gate_behavioral (
+    input a, b,
+    output reg q
+    );
+
+    always @(a or b) begin
+        if (a == 1'b1 && b == 1'b1) begin
+            q = 1'b0;
+        end
+        else begin
+            q = 1'b1;
+        end
+    end
+endmodule
+
+// 구조적 NAND Gate
+module nand_gate_structual (
+    input a, b,
+    output q
+    );
+
+    nand U1 (q, a, b);      // Verilog 기본 내장 NAND gate 사용
+endmodule
+
+// Data Flow NAND Gate
+module nand_gate_dataflow (
+    input a, b,
+    output q
+    );
+
+    assign q = ~(a & b);
+endmodule
+
+// 동작적 NOR Gate
+module nor_gate_behavioral (
+    input a, b,
+    output reg q
+    );
+
+    always @(a or b) begin
+        if (a == 1'b0 && b == 1'b0) begin
+            q = 1'b1;
+        end
+        else begin
+            q = 1'b0;
+        end
+    end
+endmodule
+
+// 구조적 NOR Gate
+module nor_gate_structual (
+    input a, b,
+    output q
+    );
+
+    nor U1 (q, a, b);       // Verilog 기본 내장 NOR gate 사용
+endmodule
+
+// Data Flow NOR Gate
+module nor_gate_dataflow (
+    input a, b,
+    output q
+    );
+
+    assign q = ~(a | b);
+endmodule
+
+// 동작적 XOR Gate
+module xor_gate_behavioral (
+    input a, b,
+    output reg q
+    );
+
+    always @(a or b) begin
+        if (a != b) begin
+            q = 1'b1;
+        end
+        else begin
+            q = 1'b0;
+        end
+    end    
+endmodule
+
+// 구조적 XOR Gate
+module xor_gate_structual (
+    input a, b,
+    output q
+    );
+
+    xor U1 (q, a, b);       // Verilog 기본 내장 XOR gate 사용
+endmodule
+
+// Data Flow XOR Gate
+module xor_gate_dataflow (
+    input a, b,
+    output q
+);
+
+    assign q = (a ^ b);
+endmodule
+
+// 동작적 XNOR Gate
+module xnor_gate_behavioral (
+    input a, b,
+    output reg q
+    );
+
+    always @(a or b) begin
+        if (a == b) begin
+            q = 1'b1;
+        end
+        else begin
+            q = 1'b0;
+        end
+    end
+endmodule
+
+// 구조적 XNOR Gate
+module xnor_gate_structual (
+    input a, b,
+    output q
+    );
+
+    xnor U1 (q, a, b);      // Verilog 기본 내장 XNOR gate 사용
+endmodule
+
+// Data Flow XNOR Gate
+module xnor_gate_dataflow (
+    input a, b,
+    output q
+    );
+
+    assign q = ~(a ^ b);
+endmodule
+
+// 동작적 NOT Gate
+module not_gate_behavioral (
+    input a,
+    output reg q
+    );
+
+    always @(a) begin
+        if (a == 1'b0) begin
+            q = 1'b1;
+        end
+        else begin
+            q = 1'b0;
+        end
+    end
+endmodule
+
+// 구조적 NOT Gate
+module not_gate_structual (
+    input a,
+    output q
+    );
+
+    not U1 (q, a);      // Verilog 기본 내장 NOT gate 사용
+endmodule
+
+// Data Flow NOT Gate
+module not_gate_dataflow (
+    input a,
+    output q
+    );
+
+    assign q = ~a;
+endmodule
+
+// 동작적 BUF Gate
+module buf_gate_behavioral (
+    input a,
+    output reg q
+    );
+
+    always @(a) begin
+        if (a == 1'b0) begin
+            q = 1'b0;
+        end
+        else begin
+            q = 1'b1;
+        end
+    end
+endmodule
+
+// 구조적 BUF Gate
+module buf_gate_structual (
+    input a,
+    output q
+    );
+
+    buf U1 (q, a);      // Verilog 기본 내장 BUF gate 사용
+endmodule
+
+// Data Flow BUF Gate
+module buf_gate_dataflow (
+    input a,
+    output q
+    );
+
+    assign q = a;
+endmodule
+
+module gates (
+    input a, b,
+    output q0, q1, q2, q3, q4, q5, q6
+    );
+
+    assign q0 = ~a;             // NOT
+    assign q1 = a & b;          // AND
+    assign q2 = a | b;          // OR
+    assign q3 = ~(a & b);       // NAND
+    assign q4 = ~(a | b);       // NOR
+    assign q5 = a ^ b;          // XOR
+    assign q6 = ~(a ^ b);       // XNOR
 endmodule
