@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1752557294" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/half_adder_behavioral.dcp">
-  <File Type="RDS-DCP" Name="half_adder_behavioral.dcp"/>
-  <File Type="RDS-RDS" Name="half_adder_behavioral.vds"/>
-  <File Type="REPORTS-TCL" Name="half_adder_behavioral_reports.tcl"/>
-  <File Type="PA-TCL" Name="half_adder_behavioral.tcl"/>
-  <File Type="RDS-UTIL" Name="half_adder_behavioral_utilization_synth.rpt"/>
-  <File Type="RDS-UTIL-PB" Name="half_adder_behavioral_utilization_synth.pb"/>
+<GenRun Id="synth_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1752630501" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/half_adder_behavioral.dcp">
+  <File Type="VDS-TIMINGSUMMARY" Name="full_adder_4bit_structural_timing_summary_synth.rpt"/>
+  <File Type="RDS-DCP" Name="full_adder_4bit_structural.dcp"/>
+  <File Type="RDS-UTIL-PB" Name="full_adder_4bit_structural_utilization_synth.pb"/>
+  <File Type="RDS-UTIL" Name="full_adder_4bit_structural_utilization_synth.rpt"/>
+  <File Type="RDS-PROPCONSTRS" Name="full_adder_4bit_structural_drc_synth.rpt"/>
+  <File Type="RDS-RDS" Name="full_adder_4bit_structural.vds"/>
+  <File Type="REPORTS-TCL" Name="full_adder_4bit_structural_reports.tcl"/>
+  <File Type="VDS-TIMING-PB" Name="full_adder_4bit_structural_timing_summary_synth.pb"/>
+  <File Type="PA-TCL" Name="full_adder_4bit_structural.tcl"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/new/adder.v">
@@ -17,8 +20,7 @@
     </File>
     <Config>
       <Option Name="DesignMode" Val="RTL"/>
-      <Option Name="TopModule" Val="half_adder_behavioral"/>
-      <Option Name="TopAutoSet" Val="TRUE"/>
+      <Option Name="TopModule" Val="full_adder_4bit_structural"/>
     </Config>
   </FileSet>
   <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1" RelGenDir="$PGENDIR/constrs_1">

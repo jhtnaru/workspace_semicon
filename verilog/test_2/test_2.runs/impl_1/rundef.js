@@ -30,7 +30,7 @@ eval( EAInclude(ISEJScriptLib) );
 // pre-commands:
 ISETouchFile( "write_bitstream", "begin" );
 ISEStep( "vivado",
-         "-log half_adder_behavioral.vdi -applog -m64 -product Vivado -messageDb vivado.pb -mode batch -source half_adder_behavioral.tcl -notrace" );
+         "-log full_adder_4bit_structural.vdi -applog -m64 -product Vivado -messageDb vivado.pb -mode batch -source full_adder_4bit_structural.tcl -notrace" );
 
 
 

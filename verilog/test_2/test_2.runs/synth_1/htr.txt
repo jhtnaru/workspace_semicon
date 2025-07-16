@@ -7,4 +7,4 @@
 # Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 #
 
-vivado -log half_adder_behavioral.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source half_adder_behavioral.tcl
+vivado -log full_adder_4bit_structural.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source full_adder_4bit_structural.tcl
