@@ -14,7 +14,6 @@ module tb_full_adder_structual;
 
     initial begin
         $display("Time\t A B Cin | Sum Carry");
-        $display("-------------------");
         $monitor("%4d\t %b %b  %b  |  %b    %b", $time, a, b, cin, sum, carry);
 
         a = 0; b = 0; cin = 0; #10;
@@ -98,20 +97,21 @@ module tb_full_adder_4bit_structural;
         .carry(carry)
     );
 
+    integer i, j;
+
     initial begin
         $display("Time\tcin\ta   \tb   \t| sum \tcarry");
         $monitor("%4d\t%b  \t%b\t%b\t| %b\t%b", $time, cin, a, b, sum, carry);
 
-        // Test
-        cin = 0; a = 4'b0000; b = 4'b0000; #10;
-        cin = 0; a = 4'b0001; b = 4'b0001; #10;
-        cin = 1; a = 4'b0010; b = 4'b0011; #10;
-        cin = 1; a = 4'b0110; b = 4'b0011; #10;
-        cin = 0; a = 4'b1111; b = 4'b0001; #10;
-        cin = 1; a = 4'b1010; b = 4'b0101; #10;
-        cin = 0; a = 4'b1111; b = 4'b1111; #10;
-        cin = 1; a = 4'b1111; b = 4'b1111;
-        #10 $finish;
+        for (i = 0; i < 16; i = i + 1) begin
+            for (j = 0; j < 16; j = j + 1) begin
+                a = i;
+                b = j;
+                cin = 0; #10;
+                cin = 1; #10;
+            end
+        end
+        $finish;
     end
 endmodule
 
