@@ -28,12 +28,12 @@ module tb_comparator_4bit;
     // comparator_Nbit_behavioral #(.N(4)) dut (
     //     .a(a), .b(b), .equal(equal), .greator(greator), .less(less)
     // );
-    // comparator_Nbit_structural #(.N(4)) dut (
-    //     .a(a), .b(b), .equal(equal), .greator(greator), .less(less)
-    // );
-    comparator_Nbit_dataflow #(.N(4)) dut (
+    comparator_4bit_structural dut (
         .a(a), .b(b), .equal(equal), .greator(greator), .less(less)
     );
+    // comparator_Nbit_dataflow #(.N(4)) dut (
+    //     .a(a), .b(b), .equal(equal), .greator(greator), .less(less)
+    // );
 
     integer i, j;
 

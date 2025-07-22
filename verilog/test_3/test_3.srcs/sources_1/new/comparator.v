@@ -24,10 +24,11 @@ module comparator_structural (
 
     not (nota, a);                      // nota = ~a
     not (notb, b);                      // notb = ~b
-    and (a_and_b, a, b);                // a_and_b = a & b
-    and (nota_and_notb, nota, notb);    // nota_and_notb = ~a & ~b
+    // and (a_and_b, a, b);                // a_and_b = a & b
+    // and (nota_and_notb, nota, notb);    // nota_and_notb = ~a & ~b
 
-    or (equal, a_and_b, nota_and_notb); // equal = (a & b) | (~a & ~b), XNOR
+    // or (equal, a_and_b, nota_and_notb); // equal = (a & b) | (~a & ~b), XNOR
+    xnor (equal, a, b);
     and (greator, a, notb);             // greator = a & ~b
     and (less, nota, b);                // less = ~a & b
 endmodule
@@ -100,6 +101,29 @@ module comparator_Nbit_behavioral #(parameter N = 8) (
     end
 endmodule
 
-// 구조적 N-bit Comparator
+// 구조적 4-bit Comparator
+module comparator_4bit_structural (
+    input [3:0] a, b,
+    output equal, greator, less
+    );
+    
+    wire [3:0] e_w, g_w, l_w;
+    wire [2:0] eg_w, el_w;
 
+    comparator_structural com0 (.a(a[0]), .b(b[0]), .equal(e_w[0]), .greator(g_w[0]), .less(l_w[0]));
+    comparator_structural com1 (.a(a[1]), .b(b[1]), .equal(e_w[1]), .greator(g_w[1]), .less(l_w[1]));
+    comparator_structural com2 (.a(a[2]), .b(b[2]), .equal(e_w[2]), .greator(g_w[2]), .less(l_w[2]));
+    comparator_structural com3 (.a(a[3]), .b(b[3]), .equal(e_w[3]), .greator(g_w[3]), .less(l_w[3]));
 
+    and (equal, e_w[0], e_w[1], e_w[2], e_w[3]);
+
+    and (eg_w[2], e_w[3], g_w[2]);
+    and (eg_w[1], e_w[3], e_w[2], g_w[1]);
+    and (eg_w[0], e_w[3], e_w[2], e_w[1], g_w[0]);
+    or (greator, g_w[3], eg_w[2], eg_w[1], eg_w[0]);
+
+    and (el_w[2], e_w[3], l_w[2]);
+    and (el_w[1], e_w[3], e_w[2], l_w[1]);
+    and (el_w[0], e_w[3], e_w[2], e_w[1], l_w[0]);
+    or (less, l_w[3], el_w[2], el_w[1], el_w[0]);
+endmodule
