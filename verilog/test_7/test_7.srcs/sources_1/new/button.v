@@ -95,7 +95,7 @@ module btn_led_blink (
     end
 endmodule
 
-// 
+// Button Input Debounce + 중복 방지, LED 1칸씩 Shift
 module btn_led_shift (
     input clk, reset,
     input btnL, btnR,
@@ -152,3 +152,4 @@ module btn_led_shift (
         end
     end
 endmodule
+

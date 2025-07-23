@@ -18,14 +18,10 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "i2c.h"
-#include "rtc.h"
-#include "usart.h"
-#include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lcd.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,14 +42,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-RTC_TimeTypeDef sTime;
-RTC_DateTypeDef sDate;
 
-uint8_t hour;
-uint8_t min;
-uint8_t sec;
-uint16_t subsec;
-char rtcTime[16];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -95,49 +84,14 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_I2C1_Init();
-  MX_RTC_Init();
-  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  i2cLCD_Init();
 
-  // 00:00:00
-  sTime.Hours = 0x08;
-  sTime.Minutes = 0x42;
-  sTime.Seconds = 0x12;
-  sTime.TimeFormat = RTC_HOURFORMAT_24;
-
-  // 00-00-00
-  sDate.Year = 0x25;
-  sDate.Month = 0x06;
-  sDate.Date = 0x24;
-  sDate.WeekDay = RTC_WEEKDAY_TUESDAY;
-
-
-  HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
-  HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
-	  HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BCD);
-
-	  hour = ((sTime.Hours >> 4) * 10) + (sTime.Hours & 0x0f);
-	  min = ((sTime.Minutes >> 4) * 10) + (sTime.Minutes & 0x0f);
-	  sec = ((sTime.Seconds >> 4) * 10) + (sTime.Seconds & 0x0f);
-	  subsec = 999 - ((sTime.SubSeconds * 1000) / (hrtc.Init.SynchPrediv + 1));
-
-	  sprintf(rtcTime, "%02d:%02d:%02d.%03d", hour, min, sec, subsec);
-
-	  moveCursor(1, 2);
-	  lcdString(rtcTime);
-
-//	  HAL_Delay(100);
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -162,15 +116,10 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 4;
-  RCC_OscInitStruct.PLL.PLLN = 100;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 4;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -180,12 +129,12 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
   {
     Error_Handler();
   }

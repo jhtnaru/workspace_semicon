@@ -227,32 +227,6 @@ module up_counter_test (
     up_counter_pos U1 (.clk(clk_s), .reset_p(sw_0), .enable(sw_1), .count(led));
 endmodule
 
-// Negative edge Edge Detector
-module edge_detector_neg (
-    input clk, reset_p, cp,     // Clock, Reset, Input Signal 감지
-    output p_edge, n_edge       // Rising, Falling 감지 출력
-    );
-
-    reg ff_cur, ff_old;         // cp 현재값과 이전값 저장할 Flip-Flop
-
-    always @(negedge clk or posedge reset_p) begin
-        if (reset_p) begin          // Reset Flip-Flop 초기화
-            ff_cur <= 0;
-            ff_old <= 0;
-        end
-        else begin                  // 이전값 저장하고 현재값 갱신
-            ff_old <= ff_cur;
-            ff_cur <= cp;
-        end
-    end
-
-    // Rising 감지, 이전 0, 현재 1 이면 p_edge = 1
-    // assign p_edge = ({ff_cur, ff_old} == 2'b10) ? 1 : 0;
-    // Falling 감지, 이전 1, 현재 0 이면 n_edge = 1
-    assign n_edge = ({ff_cur, ff_old} == 2'b01) ? 1 : 0;
-endmodule
-
-
 // Clock 100 Prescaler
 module clock_div_100 (
     input clk,          // System Clock 100㎒
