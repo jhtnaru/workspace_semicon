@@ -40,25 +40,9 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-#ifdef __GNUC__
-/* With GCC small printf (option LD Linker->Libraries->Small printf
- * set to 'Yes') calls __io_putchar() */
-#define PUTCHAR_PROTOTYPE int  __io_putchar(int ch)
-#else
-#define PUTCHAR_PROTOTYPE int  fputc(int ch, FILE *f)
-#endif /* __GNUC__*/
-
-/** @brief Retargets the C library printf function to the USART.
- *  @param None
- *  @retval None
- */
-PUTCHAR_PROTOTYPE {
-  /* Place your implementation of fputc here */
-  /* e.g. write a character to the USART2 and Loop
-     until the end of transmission */
-  if(ch == '\n')
-    HAL_UART_Transmit(&huart2, (uint8_t*) "\r", 1, 0xFFFF);
-    HAL_UART_Transmit(&huart2, (uint8_t*) &ch, 1, 0xFFFF);
+int _write(int file, unsigned char* p, int len) {
+    HAL_StatusTypeDef status = HAL_UART_Transmit(&huart2, p, len, 100);
+    return (status == HAL_OK ? len : 0);
 }
 /* USER CODE END PM */
 
@@ -111,6 +95,7 @@ int main(void)
   MX_TIM11_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  HAL_TIM_Base_Start(&htim11);
   dht11Init(&dht, GPIOB, GPIO_PIN_13);
   /* USER CODE END 2 */
 
@@ -126,7 +111,7 @@ int main(void)
 	  else {
 		  printf("Read Failed !!\r\n");
 	  }
-	  HAL_Delay(700);
+	  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -155,8 +140,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 12;
-  RCC_OscInitStruct.PLL.PLLN = 96;
+  RCC_OscInitStruct.PLL.PLLM = 4;
+  RCC_OscInitStruct.PLL.PLLN = 100;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
@@ -197,8 +182,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

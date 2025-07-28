@@ -56,7 +56,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 //	HAL_UART_Receive_IT(&huart2, rxData, 4);
 	HAL_UART_Receive_IT(&huart2, &rxData, 1);
 
-	// Switch Case 문 사용 가능, a  97, b 98
+	// Switch Case 문 사용 가능, a 97, b 98
 	if(rxData == 'a') {
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
 	}

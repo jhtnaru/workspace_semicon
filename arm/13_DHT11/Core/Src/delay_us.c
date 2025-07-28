@@ -9,7 +9,8 @@
 
 // micro 단위 delay 함수
 void delay_us(uint16_t us) {
-	uint16_t start = __HAL_TIM_GET_COUNTER(&htim11);
-	while((__HAL_TIM_GET_COUNTER(&htim11) - start) < us);
+//	uint16_t start = __HAL_TIM_GET_COUNTER(&htim11);
+	__HAL_TIM_SET_COUNTER(&htim11, 0);
+	while(__HAL_TIM_GET_COUNTER(&htim11) < us);
 }
 

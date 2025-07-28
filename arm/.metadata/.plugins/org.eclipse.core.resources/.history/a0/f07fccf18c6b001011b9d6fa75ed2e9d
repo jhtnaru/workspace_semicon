@@ -1,0 +1,55 @@
+/*
+ * rfid.c
+ *
+ *  Created on: Jul 28, 2025
+ *      Author: user16
+ */
+#include "rfid.h"
+
+// SPI 핸들러, CubeMX에서 생성된 핸들러 이름 사용
+extern SPI_HandleTypeDef hspi1;
+
+// RC522 Chip Select 핀 제어
+#define RC522_CS_GPIO_Port GPIOC
+#define RC522_CS_Pin GPIO_PIN_6
+
+void RC522_CS_Enable() {
+    HAL_GPIO_WritePin(RC522_CS_GPIO_Port, RC522_CS_Pin, GPIO_PIN_RESET);
+}
+
+void RC522_CS_Disable() {
+    HAL_GPIO_WritePin(RC522_CS_GPIO_Port, RC522_CS_Pin, GPIO_PIN_SET);
+}
+
+// SPI로 한 바이트 송수신
+uint8_t RC522_SPI_TransmitReceive(uint8_t data) {
+    uint8_t rxData;
+    HAL_SPI_TransmitReceive(&hspi1, &data, &rxData, 1, 10);
+    return rxData;
+}
+
+// RC522 레지스터에 데이터 쓰기
+void RC522_WriteRegister(uint8_t reg, uint8_t value) {
+    RC522_CS_Enable();
+    RC522_SPI_TransmitReceive((reg << 1) & 0x7E);
+    RC522_SPI_TransmitReceive(value);
+    RC522_CS_Disable();
+}
+
+// RC522 레지스터에서 데이터 읽기
+uint8_t RC522_ReadRegister(uint8_t reg) {
+    uint8_t value;
+    RC522_CS_Enable();
+    RC522_SPI_TransmitReceive(((reg << 1) & 0x7E) | 0x80);
+    value = RC522_SPI_TransmitReceive(0x00);
+    RC522_CS_Disable();
+    return value;
+}
+
+// RC522 초기화 예시
+void RC522_Init() {
+    RC522_CS_Disable();
+    HAL_Delay(50);
+    RC522_WriteRegister(CommandReg, PCD_IDLE);
+    // 필요에 따라 추가 초기화 코드 작성
+}

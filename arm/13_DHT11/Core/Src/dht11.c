@@ -28,6 +28,7 @@ void dht11GpioMode(DHT11 *dht, uint8_t mode) {
 		GPIO_InitStruct.Pin = dht->pin;
 		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 		HAL_GPIO_Init(dht->port, &GPIO_InitStruct);
 	}
 }
@@ -42,15 +43,12 @@ uint8_t dht11Read(DHT11 *dht) {
 	uint8_t tempValue1 = 0, tempValue2 = 0;	// 온도 변수
 	uint8_t parityValue = 0;						// Check Sum 변수
 
-	// Timer 시작
-	HAL_TIM_Base_Start(&htim11);				// for Delay_us
-
 	// 통신 신호 전송 시작
 	dht11GpioMode(dht, OUTPUT);					// Output Mode Setting
 	HAL_GPIO_WritePin(dht->port, dht->pin, GPIO_PIN_RESET);		// Low
 	HAL_Delay(20);								// at least 18ms
 	HAL_GPIO_WritePin(dht->port, dht->pin, GPIO_PIN_SET);		// High
-	delay_us(30);									// at least 20~40us
+	delay_us(40);									// at least 20~40us
 
 	// DHT11 응답 신호 대기
 	dht11GpioMode(dht, INPUT);					// Input Mode Setting
@@ -58,7 +56,7 @@ uint8_t dht11Read(DHT11 *dht) {
 	while(HAL_GPIO_ReadPin(dht->port, dht->pin) == GPIO_PIN_RESET) {
 		if (__HAL_TIM_GET_COUNTER(&htim11) > 100) {	// at least 80us
 			printf("Time Out Low !!\r\n");
-			break;
+			return false;
 		}
 	}
 
@@ -66,30 +64,37 @@ uint8_t dht11Read(DHT11 *dht) {
 	while(HAL_GPIO_ReadPin(dht->port, dht->pin) == GPIO_PIN_SET) {
 		if (__HAL_TIM_GET_COUNTER(&htim11) > 100) {	// at least 80us
 			printf("Time Out High !!\r\n");
-			break;
+			return false;
 		}
 	}
 
 	// Data Transmission
-	for (uint8_t i = 0; i  < 40; i++) {
-		while(HAL_GPIO_ReadPin(dht->port, dht->pin) == GPIO_PIN_RESET);	// Low 50us 대기
+	for (uint8_t i = 0; i < 40; i++) {
+		__HAL_TIM_SET_COUNTER(&htim11, 0);
+		while(HAL_GPIO_ReadPin(dht->port, dht->pin) == GPIO_PIN_RESET) {
+			if (__HAL_TIM_GET_COUNTER(&htim11) > 100) {
+				printf("Timeout - Low response\r\n");
+				return false;
+			}
+		}
 
 		__HAL_TIM_SET_COUNTER(&htim11, 0);
-
 		while(HAL_GPIO_ReadPin(dht->port, dht->pin) == GPIO_PIN_SET) {		// High Signal 대기
 			timeTick = __HAL_TIM_GET_COUNTER(&htim11);	// High Signal 시간 측정
+			if (__HAL_TIM_GET_COUNTER(&htim11) > 100) {
+				printf("Timeout - High response\r\n");
+				return false;
+			}
 		}
 
 		// 신호 길이에 따른 0, 1 구분
-		if (timeTick > 20 && timeTick < 30) {
+		if (timeTick < 50 ) {
 			pulse[i] = 0;
 		}
-		else if (timeTick > 65 && timeTick < 85) {
+		else {
 			pulse[i] = 1;
 		}
 	}
-
-	HAL_TIM_Base_Stop(&htim11);
 
 	// 온도, 습도 Data 처리
 	for (uint8_t i = 0; i < 8; i++) {

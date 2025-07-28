@@ -1,0 +1,237 @@
+/*
+ * rfid.c
+ *
+ *  Created on: Jul 28, 2025
+ *      Author: user16
+ */
+#include "rfid.h"
+
+extern SPI_HandleTypeDef hspi1;
+
+static void rfidSDA(uint8_t state) {
+    HAL_GPIO_WritePin(RFID_SDA_PORT, RFID_SDA_PIN, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+}
+
+static void rfidRST(uint8_t state) {
+    HAL_GPIO_WritePin(RFID_RST_PORT, RFID_RST_PIN, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+}
+
+static uint8_t spiTransfer(uint8_t data) {
+    uint8_t r;
+    HAL_SPI_TransmitReceive(&hspi1, &data, &r, 1, HAL_MAX_DELAY);
+    return r;
+}
+
+void rfidInit(void) {
+	HAL_GPIO_WritePin(RFID_RST_PORT, RFID_RST_PIN, GPIO_PIN_SET);
+    HAL_Delay(50);
+    rfidReset();
+
+    rfidWriteReg(0x2A, 0x8D);  // TModeReg
+    rfidWriteReg(0x2B, 0x3E);  // TPrescalerReg
+    rfidWriteReg(0x2D, 30);    // TReloadRegL
+    rfidWriteReg(0x2C, 0);     // TReloadRegH
+    rfidWriteReg(0x15, 0x40);  // TxASKReg
+    rfidWriteReg(0x11, 0x3D);  // ModeReg
+
+    rfidAntennaOn();
+}
+
+uint8_t rfidCheck(uint8_t *id) {
+    uint8_t status;
+    status = rfidRequest(PICC_REQIDL, id);
+    if (status == MI_OK) {
+        status = rfidAnticoll(id);
+    }
+    return status;
+}
+
+void rfidWriteReg(uint8_t add, uint8_t val) {
+    RC522_CS(0);
+    SPI_Transfer((add << 1) & 0x7E);
+    SPI_Transfer(val);
+    RC522_CS(1);
+}
+
+
+
+uint8_t rfidReadReg(uint8_t add);
+void rfidSetBitMask(uint8_t reg, uint8_t mask);
+void rfidClearBitMask(uint8_t reg, uint8_t mask);
+void rfidAntennaOn(void);
+void rfidAntennaOff(void);
+void rfidReset(void);
+uint8_t rfidRequest(uint8_t rMode, uint8_t *TagType);
+uint8_t rfidToCard(uint8_t command, uint8_t *sendData, uint8_t sendLen, uint8_t *backData, uint32_t *backLen);
+uint8_t rfidAnticoll(uint8_t *sNum);
+uint8_t rfidSelectTag(uint8_t *sNum);
+void rfidHalt(void);
+
+
+
+
+
+
+
+
+
+uint8_t RC522_ReadRegister(uint8_t addr) {
+    RC522_CS(0);
+    SPI_Transfer(((addr << 1) & 0x7E) | 0x80);
+    uint8_t val = SPI_Transfer(0x00);
+    RC522_CS(1);
+    return val;
+}
+
+void RC522_SetBitMask(uint8_t reg, uint8_t mask) {
+    uint8_t tmp = RC522_ReadRegister(reg);
+    RC522_WriteRegister(reg, tmp | mask);
+}
+
+void RC522_ClearBitMask(uint8_t reg, uint8_t mask) {
+    uint8_t tmp = RC522_ReadRegister(reg);
+    RC522_WriteRegister(reg, tmp & (~mask));
+}
+
+void RC522_Reset(void) {
+    RC522_WriteRegister(0x01, PCD_RESETPHASE);
+}
+
+void RC522_AntennaOn(void) {
+    uint8_t temp = RC522_ReadRegister(0x14);
+    if (!(temp & 0x03)) {
+        RC522_SetBitMask(0x14, 0x03);
+    }
+}
+
+void RC522_AntennaOff(void) {
+    RC522_ClearBitMask(0x14, 0x03);
+}
+
+
+
+uint8_t RC522_Request(uint8_t reqMode, uint8_t *TagType) {
+    uint8_t status;
+    uint8_t backBits;
+
+    RC522_WriteRegister(0x0D, 0x07);  // BitFramingReg
+    TagType[0] = reqMode;
+    status = RC522_ToCard(PCD_TRANSCEIVE, TagType, 1, TagType, (uint32_t *)&backBits);
+    return (status == MI_OK && backBits == 0x10) ? MI_OK : MI_ERR;
+}
+
+uint8_t RC522_ToCard(uint8_t command, uint8_t *sendData, uint8_t sendLen,
+                     uint8_t *backData, uint32_t *backLen) {
+    uint8_t status = MI_ERR;
+    uint8_t irqEn = 0x00;
+    uint8_t waitIRq = 0x00;
+    uint8_t lastBits;
+    uint8_t n;
+    uint32_t i;
+
+    if (command == PCD_AUTHENT) {
+        irqEn = 0x12;
+        waitIRq = 0x10;
+    } else if (command == PCD_TRANSCEIVE) {
+        irqEn = 0x77;
+        waitIRq = 0x30;
+    }
+
+    RC522_WriteRegister(0x02, irqEn | 0x80); // CommIEnReg
+    RC522_ClearBitMask(0x04, 0x80);          // CommIrqReg
+    RC522_SetBitMask(0x0A, 0x80);            // FIFOLevelReg
+
+    RC522_WriteRegister(0x01, PCD_IDLE);     // CommandReg
+
+    for (i = 0; i < sendLen; i++) {
+        RC522_WriteRegister(0x09, sendData[i]); // FIFODataReg
+    }
+
+    RC522_WriteRegister(0x01, command);
+
+    if (command == PCD_TRANSCEIVE) {
+        RC522_SetBitMask(0x0D, 0x80); // StartSend
+    }
+
+    i = 2000; // Timeout
+    do {
+        n = RC522_ReadRegister(0x04);
+        i--;
+    } while (i != 0 && !(n & 0x01) && !(n & waitIRq));
+
+    RC522_ClearBitMask(0x0D, 0x80);
+
+    if (i != 0) {
+        if ((RC522_ReadRegister(0x06) & 0x1B) == 0x00) {
+            status = MI_OK;
+
+            if (n & irqEn & 0x01) {
+                status = MI_NOTAGERR;
+            }
+
+            if (command == PCD_TRANSCEIVE) {
+                n = RC522_ReadRegister(0x0A);
+                lastBits = RC522_ReadRegister(0x0C) & 0x07;
+                *backLen = (lastBits) ? ((n - 1) * 8 + lastBits) : (n * 8);
+
+                for (i = 0; i < n; i++) {
+                    backData[i] = RC522_ReadRegister(0x09);
+                }
+            }
+        } else {
+            status = MI_ERR;
+        }
+    }
+
+    return status;
+}
+
+uint8_t RC522_Anticoll(uint8_t *serNum) {
+    uint8_t status;
+    uint8_t i;
+    uint8_t serNumCheck = 0;
+    uint32_t unLen;
+
+    RC522_WriteRegister(0x0D, 0x00);
+    serNum[0] = PICC_ANTICOLL;
+    serNum[1] = 0x20;
+    status = RC522_ToCard(PCD_TRANSCEIVE, serNum, 2, serNum, &unLen);
+
+    if (status == MI_OK) {
+        for (i = 0; i < 4; i++) {
+            serNumCheck ^= serNum[i];
+        }
+        if (serNumCheck != serNum[4]) status = MI_ERR;
+    }
+
+    return status;
+}
+
+uint8_t RC522_SelectTag(uint8_t *serNum) {
+    uint8_t i;
+    uint8_t status;
+    uint8_t recvBits;
+    uint8_t buffer[9];
+
+    buffer[0] = PICC_SELECTTAG;
+    buffer[1] = 0x70;
+    for (i = 0; i < 5; i++) {
+        buffer[i + 2] = serNum[i];
+    }
+
+    // TODO: Add CRC calc
+
+    status = RC522_ToCard(PCD_TRANSCEIVE, buffer, 7, buffer, (uint32_t *)&recvBits);
+    return (status == MI_OK && recvBits == 0x18) ? MI_OK : MI_ERR;
+}
+
+
+void RC522_Halt(void) {
+    uint8_t buffer[4];
+
+    buffer[0] = PICC_HALT;
+    buffer[1] = 0;
+    // TODO: Add CRC
+
+    RC522_ToCard(PCD_TRANSCEIVE, buffer, 2, buffer, 0);
+}

@@ -4,7 +4,6 @@
  *  Created on: Jul 24, 2025
  *      Author: user16
  */
-
 #ifndef INC_DHT11_H_
 #define INC_DHT11_H_
 

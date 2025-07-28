@@ -1,0 +1,14 @@
+/*
+ * rfid.h
+ *
+ *  Created on: Jul 28, 2025
+ *      Author: user16
+ */
+#ifndef INC_RFID_H_
+#define INC_RFID_H_
+
+#include "main.h"
+
+
+
+#endif /* INC_RFID_H_ */

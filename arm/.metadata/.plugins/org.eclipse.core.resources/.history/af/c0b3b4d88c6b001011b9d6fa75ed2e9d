@@ -1,0 +1,22 @@
+/*
+ * rfid.h
+ *
+ *  Created on: Jul 28, 2025
+ *      Author: user16
+ */
+#ifndef INC_RFID_H_
+#define INC_RFID_H_
+
+#include "main.h"
+
+#define CommandReg 0x01
+#define PCD_IDLE 0x00
+
+void RC522_CS_Enable();
+void RC522_CS_Disable();
+uint8_t RC522_SPI_TransmitReceive(uint8_t data);
+void RC522_WriteRegister(uint8_t reg, uint8_t value);
+uint8_t RC522_ReadRegister(uint8_t reg);
+void RC522_Init();
+
+#endif /* INC_RFID_H_ */

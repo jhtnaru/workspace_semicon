@@ -37,7 +37,7 @@ module clock_divider_seg (
     reg [15:0] count = 1;
 
     always @(posedge clk) begin
-        if (count == 25_000) begin          // 25_000
+        if (count == 2_500) begin          // 25_000
             count <= 1;
             clk_div_s <= ~clk_div_s;
         end
@@ -178,9 +178,10 @@ module button_debounce (
     output reg btn_out
     );
 
-    reg [23:0] count;
-    reg btn_sync_0, btn_sync_1;
-    wire stable = (count == 1_000_000);
+    reg [23:0] count = 0;
+    reg btn_sync_0 = 0, btn_sync_1 = 0;
+    reg btn_state = 0;
+    // wire stable = (count == 1_000_000);
 
     // 동기화
     always @(posedge clk) begin
@@ -190,14 +191,16 @@ module button_debounce (
 
     // Counter 기반 Debounce
     always @(posedge clk) begin
-        if (btn_sync_1 == btn_out) begin
-            count <= 0;
+        if (btn_sync_1 != btn_state) begin
+            count <= count + 1;
+            if (count >= 1_000_000) begin
+                btn_state <= btn_sync_1;
+                btn_out <= btn_sync_1;
+                count <= 0;
+            end
         end
         else begin
-            count <= count + 1;
-            if (stable) begin
-                btn_out <= btn_sync_1;
-            end
+            count <= 0;
         end
     end
 endmodule
@@ -399,7 +402,10 @@ module stopwatch_top_2 (
     output reg [15:0] led
     );
 
-    wire clk_div, clk_div_s;
+    reg clk_div, clk_div_1, clk_div_2, clk_div_s;
+    reg [26:0] count_1 = 1;
+    reg [26:0] count_2 = 1;
+    reg [26:0] count_s = 1;
 
     wire [3:0] ssub_secs, sub_secs;
     wire [3:0] sec_ones, sec_tens;
@@ -415,10 +421,46 @@ module stopwatch_top_2 (
     wire [3:0] select_digit_1, select_digit_2;
     wire btn_ss_clean, btn_re_clean;
 
+    always @(posedge clk) begin
+        if (reset_p) begin
+            count_1 <= 1;
+            count_2 <= 1;
+            clk_div <= 0;
+            clk_div_1 <= 0;
+            clk_div_2 <= 0;
+        end
+        else begin
+            if (count_1 == 500_000) begin
+                count_1 <= 1;
+                clk_div_1 <= ~ clk_div_1;
+            end
+            else begin
+                count_1 <= count_1 + 1;
+            end
+            if (count_2 == 5_000) begin
+                count_2 <= 1;
+                clk_div_2 <= ~ clk_div_2;
+            end
+            else begin
+                count_2 <= count_2 + 1;
+            end
+            if (count_s == 2_500) begin
+                count_s <= 1;
+                clk_div_s <= ~ clk_div_s;
+            end
+            else begin
+                count_s <= count_s + 1;
+            end
+        end
 
-    clock_divider U1 (.clk(clk), .reset_p(reset_p), .clk_div(clk_div));
-    clock_divider_seg U2 (.clk(clk), .clk_div_s(clk_div_s));
-    
+        if (sw_1 == 0) begin
+            clk_div <= clk_div_1;
+        end
+        else if (sw_1 == 1) begin
+            clk_div <= clk_div_2;
+        end
+    end
+
     button_debounce B1 (.clk(clk), .btn_in(btn_start_stop), .btn_out(btn_ss_clean));
     button_debounce B2 (.clk(clk), .btn_in(btn_reset), .btn_out(btn_re_clean));
     
@@ -443,33 +485,17 @@ module stopwatch_top_2 (
         if (reset_p) begin
             led <= 16'b0000_0000_0000_0000;
         end
-        else if (sw_1 == 0) begin
+        else begin
             led <= 16'b0000_0000_0000_0000;
             sec_r <= sec_tens + 10;
             led[sec_ones] <= 1'b1;
             led[sec_r] <= 1'b1;
-
-            s_1st_1 <= sec_ones;
-            s_2nd_1 <= sec_tens;
-            s_3rd_1 <= min_ones;
-            s_4th_1 <= min_tens;
-        end
-        else if (sw_1 == 1) begin
-            led <= 16'b0000_0000_0000_0000;
-            sec_r <= sec_tens + 10;
-            led[sub_secs] <= 1'b1;
-            led[15:10] <= {2'b00, sec_ones};
-
-            s_1st_1 <= sub_secs;
-            s_2nd_1 <= sec_ones;
-            s_3rd_1 <= sec_tens;
-            s_4th_1 <= min_ones;
         end
     end
 
     display_scan_controller U4 (.clk_div_s(clk_div_s),
-                        .s_1st(s_1st_1), .s_2nd(s_2nd_1),
-                        .s_3rd(s_3rd_1), .s_4th(s_4th_1),
+                        .s_1st(sec_ones), .s_2nd(sec_tens),
+                        .s_3rd(min_ones), .s_4th(min_tens),
                         .scan_count(scan_count_1), .select_digit(select_digit_1));
     seg_decoder_a U5 (.scan_count(scan_count_1), .digit_in(select_digit_1), .seg_out(seg), .dp_out(dp));
     anode_selector U6 (.scan_count(scan_count_1), .an_out(an));
