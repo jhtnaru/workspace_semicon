@@ -138,7 +138,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  // 좌, 우 Shift
+	  // 좌, 우 Shift 적용
 	  if (dotCount >= 300) {
 		  if (dotDir_1 == 0) {
 			  dotShift++;
@@ -167,6 +167,7 @@ int main(void)
 		  }
 	  }
 
+	  // 특정 모양 켜기
 	  for (uint8_t row = 0; row < 8; row++) {
 		  for (uint8_t i = 0; i < 8; i++) {
 			  HAL_GPIO_WritePin(rowPort[i], rowPin[i], GPIO_PIN_RESET);
@@ -181,27 +182,9 @@ int main(void)
 				  HAL_GPIO_WritePin(colPort[col], colPin[col], GPIO_PIN_SET);
 			  }
 		  }
-		  dotCount++;
+		  dotCount++;			// 1ms Delay 이용해서 Delay 적용
 		  HAL_Delay(1);
 	  }
-
-//	  // 특정 모양 켜기
-//	  for (uint8_t row = 0; row < 8; row++) {
-//		  for (uint8_t i = 0; i < 8; i++) {
-//			  HAL_GPIO_WritePin(rowPort[i], rowPin[i], GPIO_PIN_RESET);
-//		  }
-//		  HAL_GPIO_WritePin(rowPort[row], rowPin[row], GPIO_PIN_SET);
-//
-//		  for (uint8_t col = 0; col < 8; col++) {
-//			  if (dotArr_1[row] & (1 << col)) {
-//				  HAL_GPIO_WritePin(colPort[col], colPin[col], GPIO_PIN_RESET);
-//			  }
-//			  else {
-//				  HAL_GPIO_WritePin(colPort[col], colPin[col], GPIO_PIN_SET);
-//			  }
-//		  }
-//		  HAL_Delay(1);
-//	  }
 
 //	  // 1열씩 켜기
 //	  // Col 0 → On, 1 → Off, Row 0 → Off, 1 → On
