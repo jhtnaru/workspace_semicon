@@ -1,0 +1,12 @@
+/*
+ * rc522.h
+ *
+ *  Created on: Aug 4, 2025
+ *      Author: user16
+ */
+#ifndef INC_RC522_H_
+#define INC_RC522_H_
+
+#include "main.h"
+
+#endif /* INC_RC522_H_ */
