@@ -1,0 +1,46 @@
+/*
+ * rtc.h
+ *
+ *  Created on: Aug 7, 2025
+ *      Author: user16
+ */
+#ifndef INC_RTC_H_
+#define INC_RTC_H_
+
+#include "main.h"
+
+#define RTC_CLK_PORT			GPIOA
+#define RTC_CLK_PIN			GPIO_PIN_5
+#define RTC_DAT_PORT			GPIOA
+#define RTC_DAT_PIN			GPIO_PIN_6
+#define RTC_RST_PORT			GPIOA
+#define RTC_RST_PIN			GPIO_PIN_7
+
+#define READ_SEC				0x81
+#define READ_MIN				0x83
+#define READ_HOUR				0x85
+#define READ_DATE				0x87
+#define READ_MONTH			0x89
+#define READ_DAY				0x8B
+#define READ_YEAR				0x8D
+
+#define WRITE_SEC				0x80
+#define WRITE_MIN				0x82
+#define WRITE_HOUR			0x84
+#define WRITE_DATE			0x86
+#define WRITE_MONTH			0x88
+#define WRITE_DAY				0x8A
+#define WRITE_YEAR			0x8C
+
+enum {
+	INPUT,
+	OUTPUT
+};
+
+void gpioMode(GPIO_TypeDef *port, uint16_t pin, uint8_t mode);
+void rtcWrite(GPIO_TypeDef *clk_port, uint16_t clk_pin,
+				GPIO_TypeDef *dat_port, uint16_t dat_pin, uint8_t value);
+uint8_t rtcRead(GPIO_TypeDef *clk_port, uint16_t clk_pin,
+				  GPIO_TypeDef *dat_port, uint16_t dat_pin);
+
+#endif /* INC_RTC_H_ */

@@ -1,0 +1,12 @@
+/*
+ * rtc.h
+ *
+ *  Created on: Aug 7, 2025
+ *      Author: user16
+ */
+#ifndef INC_RTC_H_
+#define INC_RTC_H_
+
+#include "main.h"
+
+#endif /* INC_RTC_H_ */
