@@ -16,6 +16,7 @@ org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:13_DHT11\ Debug/activeLaunchTar
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:13_FLAME\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:13_PIR_SENSOR\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:13_SOUND_SENSOR\ Debug/activeLaunchMode=run
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:13_TILT\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:13_WATER/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:16_RTC\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:16_RTC\ Debug/activeLaunchTarget=null\:---
