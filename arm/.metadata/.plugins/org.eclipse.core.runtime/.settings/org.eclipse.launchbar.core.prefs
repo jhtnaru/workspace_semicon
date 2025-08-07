@@ -11,6 +11,7 @@ org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:03_4X4_KEYPAD\ Debug/activeLaun
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:09_FAN_MOTOR\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:11_RFID\ Debug/activeLaunchMode=debug
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:11_RFID\ Debug/activeLaunchTarget=null\:---
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:13_CDS_LDR\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:13_DHT11\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:13_DHT11\ Debug/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:13_FLAME\ Debug/activeLaunchMode=run
