@@ -1,0 +1,32 @@
+/*
+ * lcd.c
+ *
+ *  Created on: Aug 11, 2025
+ *      Author: user16
+ */
+// lcd.c
+#include "lcd.h"
+
+void LCD_WriteCommand(uint8_t cmd) {
+	LCD_DC_LOW();
+	LCD_CS_LOW();
+	HAL_SPI_Transmit(&hspi1, &cmd, 1, HAL_MAX_DELAY);
+	LCD_CS_HIGH();
+}
+
+void LCD_WriteData(uint8_t data) {
+
+}
+
+void LCD_Reset(void) {
+
+}
+
+void LCD_Init(void) {
+
+}
+
+void LCD_FillScreen(uint16_t color) {
+
+}
+

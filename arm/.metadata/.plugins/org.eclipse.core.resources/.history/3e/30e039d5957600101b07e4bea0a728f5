@@ -1,0 +1,26 @@
+/*
+ * lcd.h
+ *
+ *  Created on: Aug 11, 2025
+ *      Author: user16
+ */
+#ifndef INC_LCD_H_
+#define INC_LCD_H_
+
+#include "main.h"
+
+#define LCD_DC_LOW()			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET)
+#define LCD_DC_HIGH()		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET)
+#define LCD_RST_LOW()		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET)
+#define LCD_RST_HIGH()		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET)
+#define LCD_CS_LOW()			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET)
+#define LCD_CS_HIGH()		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET)
+
+void LCD_WriteCommand(uint8_t cmd);
+void LCD_WriteData(uint8_t data);
+void LCD_WriteData16(uint16_t data)l
+void LCD_Reset(void);
+void LCD_Init(void);
+void LCD_FillScreen(uint16_t color);
+
+#endif /* INC_LCD_H_ */

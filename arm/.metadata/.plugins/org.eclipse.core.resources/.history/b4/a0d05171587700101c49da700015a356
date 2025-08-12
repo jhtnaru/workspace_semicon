@@ -1,0 +1,17 @@
+/*
+ * lcdtouch.h
+ *
+ *  Created on: Aug 12, 2025
+ *      Author: user16
+ */
+#ifndef INC_LCDTOUCH_H_
+#define INC_LCDTOUCH_H_
+
+#include "main.h"
+#include <stdint.h>
+
+void TP_Init(void);
+uint8_t TP_Touched(void);
+uint8_t TP_GetXY(uint16_t *x, uint16_t *y); // returns 1 if ok
+
+#endif /* INC_LCDTOUCH_H_ */

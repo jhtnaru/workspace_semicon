@@ -1,0 +1,15 @@
+/*
+ * lcdfont.h
+ *
+ *  Created on: Aug 11, 2025
+ *      Author: user16
+ */
+#ifndef INC_LCDFONT_H_
+#define INC_LCDFONT_H_
+
+#include "main.h"
+#include <stdint.h>
+
+extern const uint8_t font5x7[][5];
+
+#endif /* INC_LCDFONT_H_ */

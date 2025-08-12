@@ -1,0 +1,74 @@
+/*
+ * lcd.c
+ *
+ *  Created on: Aug 11, 2025
+ *      Author: user16
+ */
+// lcd.c
+#include "lcd.h"
+#include "lcdfont.h"
+#include <string>
+
+extern SPI_HandleTypeDef hspi1;
+
+// Command Transmit
+void LCD_WriteCommand(uint8_t cmd) {
+	LCD_DC_LOW();
+	LCD_CS_LOW();
+	HAL_SPI_Transmit(&hspi1, &cmd, 1, HAL_MAX_DELAY);
+	LCD_CS_HIGH();
+}
+
+// Data Transmit
+void LCD_WriteData(uint8_t data) {
+	LCD_DC_HIGH();
+	LCD_CS_LOW();
+	HAL_SPI_Transmit(&hspi1, &data, 1, HAL_MAX_DELAY);
+	LCD_CS_HIGH();
+}
+
+void LCD_WriteData16(uint16_t data) {
+    uint8_t buf[2] = { data >> 8, data & 0xFF };
+    LCD_DC_HIGH();
+    LCD_CS_LOW();
+    HAL_SPI_Transmit(&hspi1, buf, 2, HAL_MAX_DELAY);
+    LCD_CS_HIGH();
+}
+
+void LCD_Reset(void) {
+    LCD_RST_LOW();
+    HAL_Delay(50);
+    LCD_RST_HIGH();
+    HAL_Delay(120);
+}
+
+void LCD_Init(void) {
+    LCD_Reset();
+    LCD_WriteCommand(0x01); // Software reset
+    HAL_Delay(120);
+    LCD_WriteCommand(0x28); // Display OFF
+    LCD_WriteCommand(0x3A); // Pixel format
+    LCD_WriteData(0x55);    // 16-bit
+    LCD_WriteCommand(0x36); // Memory Access Control
+    LCD_WriteData(0x48);    // Row/col exchange
+    LCD_WriteCommand(0x11); // Sleep OUT
+    HAL_Delay(120);
+    LCD_WriteCommand(0x29); // Display ON
+}
+
+void LCD_FillScreen(uint16_t color) {
+    LCD_WriteCommand(0x2A); // Column addr set
+    LCD_WriteData16(0);
+    LCD_WriteData16(239);
+
+    LCD_WriteCommand(0x2B); // Row addr set
+    LCD_WriteData16(0);
+    LCD_WriteData16(319);
+
+    LCD_WriteCommand(0x2C); // Memory write
+
+    for (uint32_t i = 0; i < 240 * 320; i++) {
+    	LCD_WriteData16(color);
+    }
+}
+
