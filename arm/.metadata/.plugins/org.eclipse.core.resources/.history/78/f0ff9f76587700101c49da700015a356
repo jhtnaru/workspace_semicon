@@ -1,9 +1,0 @@
-/*
- * lcdtouch.c
- *
- *  Created on: Aug 12, 2025
- *      Author: user16
- */
-// lcdtouch.c
-#include "lcdtouch.h"
-

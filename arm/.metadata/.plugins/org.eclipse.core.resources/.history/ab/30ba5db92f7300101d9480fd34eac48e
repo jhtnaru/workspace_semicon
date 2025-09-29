@@ -1,9 +1,0 @@
-/*
- * rtc.c
- *
- *  Created on: Aug 7, 2025
- *      Author: user16
- */
-// rtc.c
-#include "rtc.h"
-

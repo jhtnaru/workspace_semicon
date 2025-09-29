@@ -49,7 +49,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint16_t tx, ty;
+char buf[32];
+uint16_t tx = 0, ty = 0;
 uint8_t lcdTouch;
 /* USER CODE END PV */
 
@@ -64,7 +65,9 @@ int _write(int file, unsigned char* p, int len) {
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	if (GPIO_Pin == GPIO_PIN_2) {
-		lcdTouch = 1;
+		if (lcdTouch == 0) {
+			lcdTouch = 1;
+		}
 	}
 }
 /* USER CODE END PFP */
@@ -118,14 +121,30 @@ int main(void)
   while (1)
   {
 	  if (TP_GetXY(&tx, &ty)) {
-		  char buf[32];
 		  tx = 240 - tx;
 		  ty = 320 - ty;
+
+		  if (tx >= 235)		tx = 235;
+		  else if (tx <= 5)	tx = 5;
+
+		  if (ty >= 315)		ty = 315;
+		  else if (ty <= 5)	ty = 5;
+
 		  sprintf(buf,"X:%03d Y:%03d", tx, ty);
 		  ILI9341_DrawString(0, 300, buf, COLOR_GREEN, COLOR_BLACK);
 		  ILI9341_DrawRect(tx-3, ty-3, 7, 7, COLOR_RED);
 		  HAL_Delay(100);
 	  }
+
+//	  if (TP_GetXY(&tx, &ty)) {
+//		  char buf[32];
+//		  tx = 240 - tx;
+//		  ty = 320 - ty;
+//		  sprintf(buf,"X:%03d Y:%03d", tx, ty);
+//		  ILI9341_DrawString(0, 300, buf, COLOR_GREEN, COLOR_BLACK);
+//		  ILI9341_DrawRect(tx-3, ty-3, 7, 7, COLOR_RED);
+//		  HAL_Delay(100);
+//	  }
 
 //	  ILI9341_FillScreen(COLOR_BLACK);
 //	  for (uint8_t i = 0; i < 21; i++) {
@@ -146,7 +165,6 @@ int main(void)
 //	  HAL_Delay(1000);
 //	  ILI9341_FillScreen(COLOR_BLUE);
 //	  HAL_Delay(1000);
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
